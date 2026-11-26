@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Work" };
 export default function ProjectsPage() {
   return (
     <section className="container-x pb-28 pt-40">
-      <SectionHeading eyebrow="Portfolio" title="All work." sub="Everything I've built — side projects, client work and experiments." />
+      <SectionHeading eyebrow="Portfolio" title="All work." sub="Premium templates, live and ready to customise for your brand." />
       <ProjectGrid projects={getAllProjects()} tags={getAllTags()} />
     </section>
   );

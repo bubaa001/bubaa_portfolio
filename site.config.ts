@@ -3,11 +3,11 @@ export const siteConfig = {
   name: "Joshua John",
   handle: "bubaa",
   title: "Premium Web Designer & Developer",
-  tagline: "Premium, animated websites, school systems and brand kits, customised for you and delivered fast.",
+  tagline: "Premium, animated online stores and corporate websites, customised for your brand and delivered fast.",
   avatar: "https://github.com/bubaa001.png", // or "/me.jpg" placed in /public
   bio: [
     "I'm Joshua, a full-stack developer from Dar es Salaam, Tanzania. I build products end to end: Next.js and React on the web, Flutter on mobile, and Django or Node on the backend.",
-    "I've shipped Kupon, a QR-based food payment platform for Tanzanian university cafeterias, and MURA, a Flutter habits app with its own content studio and auto-updates. Now I design premium templates for schools, companies and brands, and customise them for each client.",
+    "I've shipped Kupon, a QR-based food payment platform for Tanzanian university cafeterias, and MURA, a Flutter habits app with its own content studio and auto-updates. Now I design premium online stores and corporate websites, and customise them for each client.",
   ],
   location: "Dar es Salaam, Tanzania · works remotely worldwide",
   email: "joshuajohnr1@gmail.com",
@@ -28,10 +28,10 @@ export const siteConfig = {
     { value: "24h", label: "Reply time" },
   ],
   services: [
-    { title: "School Websites", text: "Premium, animated websites that turn visiting parents into admissions enquiries." },
-    { title: "School Management Systems", text: "Students, attendance, grades, fees and timetables in one calm dashboard." },
+    { title: "Online Stores", text: "Premium, animated stores for shoe, fashion and lifestyle brands, with WhatsApp and M-Pesa ordering." },
     { title: "Corporate Websites", text: "Editorial, high-trust websites for companies, NGOs and institutions." },
-    { title: "Brand Guidelines Kits", text: "Interactive brand books: logo rules, palette, typography and social templates." },
+    { title: "Figma Design Files", text: "Every site also comes as an editable Figma design for your team or agency." },
+    { title: "Fast Delivery", text: "Built on ready, tested templates, so your site goes live in days, not months." },
   ],
   skills: [
     { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "Dart", "SQL"] },
