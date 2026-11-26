@@ -1,11 +1,26 @@
 "use client";
-import Image from "next/image";
+import Image, { type ImageProps } from "next/image";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { categories, fmt, hero, products, reviews, store, type Product } from "./data";
+import { fmt, hero, reviews, store, type Category, type Product } from "./data";
 
 /* ----------------------------- helpers ----------------------------- */
-const byId = (id: string) => products.find((p) => p.id === id)!;
+/* products + categories come from the server (Google Sheet or data.ts), see sheet.ts */
+export type CatalogValue = { products: Product[]; categories: Category[] };
+const CatalogCtx = createContext<CatalogValue>({ products: [], categories: [] });
+const useCatalog = () => useContext(CatalogCtx);
+function useById() {
+  const { products } = useCatalog();
+  return useCallback((id: string) => products.find((p) => p.id === id)!, [products]);
+}
 const buzz = (ms = 25) => { try { navigator.vibrate?.(ms); } catch {} };
+/** Product photos come from the owner's sheet: if a link is broken, show a placeholder instead of an empty box. */
+function Photo({ src, ...rest }: ImageProps) {
+  const [broken, setBroken] = useState(false);
+  const ref = useRef<HTMLImageElement>(null);
+  // the image may have failed before React hydrated and attached onError
+  useEffect(() => { const img = ref.current; if (img?.complete && img.naturalWidth === 0) setBroken(true); }, [src]);
+  return <Image {...rest} ref={ref} src={broken ? "/templates/shoes/campaign.jpg" : src} onError={() => setBroken(true)} />;
+}
 function useIsTouch() {
   const [t, setT] = useState(false);
   useEffect(() => { const m = window.matchMedia("(hover: none)"); setT(m.matches); const f = () => setT(m.matches); m.addEventListener("change", f); return () => m.removeEventListener("change", f); }, []);
@@ -22,18 +37,19 @@ const CartCtx = createContext<Cart | null>(null);
 const useCart = () => useContext(CartCtx)!;
 
 function CartProvider({ children }: { children: React.ReactNode }) {
+  const byId = useById();
   const [lines, setLines] = useState<Line[]>([]);
   const [open, setOpen] = useState(false);
   const [pick, setPick] = useState<Product | null>(null);
   const [toast, setToast] = useState("");
   const [bump, setBump] = useState(0);
-  useEffect(() => { try { const s = localStorage.getItem("stryde-cart"); if (s) setLines(JSON.parse(s)); } catch {} }, []);
+  useEffect(() => { try { const s = localStorage.getItem("stryde-cart"); if (s) setLines((JSON.parse(s) as Line[]).filter((l) => byId(l.id))); } catch {} }, [byId]); // drop saved items the owner has since removed
   useEffect(() => { try { localStorage.setItem("stryde-cart", JSON.stringify(lines)); } catch {} }, [lines]);
   const add = useCallback((id: string, size: number) => {
     setLines((ls) => { const i = ls.findIndex((l) => l.id === id && l.size === size); if (i >= 0) { const c = [...ls]; c[i] = { ...c[i], qty: c[i].qty + 1 }; return c; } return [...ls, { id, size, qty: 1 }]; });
     setBump((b) => b + 1); buzz(30);
     if (window.matchMedia("(hover: none)").matches) { setToast(`${byId(id).name} · size ${size}`); setTimeout(() => setToast(""), 2200); } else setOpen(true);
-  }, []);
+  }, [byId]);
   const setQty = (i: number, q: number) => setLines((ls) => (q <= 0 ? ls.filter((_, n) => n !== i) : ls.map((l, n) => (n === i ? { ...l, qty: q } : l))));
   return <CartCtx.Provider value={{ lines, add, setQty, open, setOpen, pick, setPick, toast, bump }}>{children}</CartCtx.Provider>;
 }
@@ -41,6 +57,7 @@ function CartProvider({ children }: { children: React.ReactNode }) {
 /* bag: right drawer on desktop, swipe-to-close bottom sheet on phones */
 function CartDrawer() {
   const { lines, setQty, open, setOpen } = useCart();
+  const byId = useById();
   const [drag, setDrag] = useState(0);
   const y0 = useRef<number | null>(null);
   const total = lines.reduce((a, l) => a + byId(l.id).price * l.qty, 0);
@@ -61,7 +78,7 @@ function CartDrawer() {
           {!lines.length && <div className="py-16 text-center"><p className="font-display text-5xl uppercase text-black/15">Empty</p><p className="mt-3 text-black/50">Your next favourite pair is one tap away.</p></div>}
           {lines.map((l, i) => { const p = byId(l.id); return (
             <div key={l.id + l.size} className="flex animate-[fadeUp_.4s_both] gap-4 rounded-2xl bg-white p-3">
-              <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl" style={{ background: p.bg ?? "#e8e5e1" }}><Image src={p.img} alt={p.name} fill sizes="96px" className="object-cover" /></div>
+              <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl" style={{ background: p.bg ?? "#e8e5e1" }}><Photo src={p.img} alt={p.name} fill sizes="96px" className="object-cover" /></div>
               <div className="flex flex-1 flex-col"><p className="font-semibold leading-tight">{p.name}</p><p className="text-sm text-black/50">Size {l.size}</p>
                 <div className="mt-auto flex items-center justify-between"><div className="flex items-center rounded-full border border-black/15"><button onClick={() => { setQty(i, l.qty - 1); buzz(); }} className="h-9 w-9" aria-label="Decrease">−</button><span className="w-6 text-center text-sm">{l.qty}</span><button onClick={() => { setQty(i, l.qty + 1); buzz(); }} className="h-9 w-9" aria-label="Increase">+</button></div><p className="font-semibold">{fmt(p.price * l.qty)}</p></div>
               </div>
@@ -91,7 +108,7 @@ function SizeSheet() {
         {pick && (
           <>
             <div className="flex items-center gap-4">
-              <div className="relative h-20 w-20 overflow-hidden rounded-2xl" style={{ background: pick.bg ?? "#e8e5e1" }}><Image src={pick.img} alt="" fill sizes="80px" className="object-cover" /></div>
+              <div className="relative h-20 w-20 overflow-hidden rounded-2xl" style={{ background: pick.bg ?? "#e8e5e1" }}><Photo src={pick.img} alt="" fill sizes="80px" className="object-cover" /></div>
               <div><p className="font-semibold">{pick.name}</p><p className="text-black/50">{fmt(pick.price)}</p></div>
             </div>
             <p className="mb-3 mt-6 text-xs font-semibold uppercase tracking-widest text-black/45">Choose your size (EU)</p>
@@ -106,6 +123,7 @@ function SizeSheet() {
 /* "added" toast + floating bag pill (phones) */
 function MobileBagBar() {
   const { lines, setOpen, toast, bump } = useCart();
+  const byId = useById();
   const [show, setShow] = useState(false);
   useEffect(() => { const f = () => setShow(window.scrollY > window.innerHeight * 0.7); f(); window.addEventListener("scroll", f, { passive: true }); return () => window.removeEventListener("scroll", f); }, []);
   const n = lines.reduce((a, l) => a + l.qty, 0);
@@ -246,6 +264,7 @@ function Hero({ idx, setIdx }: { idx: number; setIdx: (i: number) => void }) {
 
 /* ----------------------------- categories ----------------------------- */
 function Categories({ onPick }: { onPick: (name: string) => void }) {
+  const { categories } = useCatalog();
   const [hover, setHover] = useState<number | null>(null);
   const [spy, setSpy] = useState(0);
   const [mobile, setMobile] = useState(false);
@@ -278,7 +297,7 @@ function Categories({ onPick }: { onPick: (name: string) => void }) {
         <div className="sticky top-[4.75rem] z-10 mb-6 lg:hidden">
           <div className="relative aspect-[16/10] overflow-hidden rounded-3xl bg-[#e8e5e1] shadow-2xl shadow-black/50">
             {categories.map((c, i) => (
-              <Image key={c.name} src={c.img} alt={c.name} fill sizes="100vw"
+              <Photo key={c.name} src={c.img} alt={c.name} fill sizes="100vw"
                 className={`object-cover transition-all duration-700 ease-[cubic-bezier(.16,1,.3,1)] ${spy === i ? "scale-100 opacity-100" : i < spy ? "-translate-y-6 scale-110 opacity-0" : "translate-y-6 scale-110 opacity-0"}`} />
             ))}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent" />
@@ -307,7 +326,7 @@ function Categories({ onPick }: { onPick: (name: string) => void }) {
       </div>
       {/* desktop: cursor-following preview */}
       <div className="pointer-events-none fixed left-0 top-0 z-40 hidden h-64 w-80 overflow-hidden rounded-2xl shadow-2xl transition-[opacity,transform] duration-300 lg:block" style={{ transform: `translate(${pos.x + 24}px, ${pos.y - 128}px) rotate(${hover !== null ? -4 : 0}deg) scale(${hover !== null ? 1 : 0.6})`, opacity: hover !== null && !mobile ? 1 : 0 }}>
-        {categories.map((c, i) => <Image key={c.name} src={c.img} alt="" fill sizes="320px" className={`object-cover transition-opacity duration-300 ${hover === i ? "opacity-100" : "opacity-0"}`} />)}
+        {categories.map((c, i) => <Photo key={c.name} src={c.img} alt="" fill sizes="320px" className={`object-cover transition-opacity duration-300 ${hover === i ? "opacity-100" : "opacity-0"}`} />)}
       </div>
     </section>
   );
@@ -324,7 +343,7 @@ function ProductCard({ p, i }: { p: Product; i: number }) {
   return (
     <div ref={ref} className={`group transition-all duration-700 ease-[cubic-bezier(.16,1,.3,1)] ${vis ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`} style={{ transitionDelay: `${(i % 4) * 80}ms` }}>
       <div onTouchStart={() => setPress(true)} onTouchEnd={() => setPress(false)} className={`relative aspect-square overflow-hidden rounded-3xl transition-transform duration-300 ${press ? "scale-[.97]" : ""}`} style={{ background: p.bg ?? "#e8e5e1" }}>
-        <Image src={p.img} alt={p.name} fill sizes="(min-width:1024px) 25vw, 50vw" className={`object-cover transition duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-rotate-6 group-hover:scale-110 ${press ? "-rotate-3 scale-105" : ""}`} />
+        <Photo src={p.img} alt={p.name} fill sizes="(min-width:1024px) 25vw, 50vw" className={`object-cover transition duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-rotate-6 group-hover:scale-110 ${press ? "-rotate-3 scale-105" : ""}`} />
         {p.badge && <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase sm:left-4 sm:top-4 sm:px-3 sm:text-xs ${p.badge.startsWith("-") ? "bg-[#ff4d1f] text-white" : "bg-[#0d0d0d] text-white"}`}>{p.badge}</span>}
         {/* phones: always-visible add button → size sheet */}
         <button onClick={() => { setPick(p); buzz(15); }} aria-label={`Add ${p.name}`} className="absolute bottom-3 right-3 grid h-11 w-11 place-items-center rounded-full bg-[#0d0d0d] text-2xl text-white shadow-lg transition active:scale-90 [@media(hover:hover)]:hidden">+</button>
@@ -346,12 +365,13 @@ function ProductCard({ p, i }: { p: Product; i: number }) {
 }
 
 function Shop({ cat, setCat }: { cat: string; setCat: (c: string) => void }) {
+  const { products } = useCatalog();
   const cats = ["All", ...Array.from(new Set(products.map((p) => p.cat)))];
   const [sort, setSort] = useState("featured");
   const list = useMemo(() => {
     const l = products.filter((p) => cat === "All" || p.cat === cat);
     return sort === "low" ? [...l].sort((a, b) => a.price - b.price) : sort === "high" ? [...l].sort((a, b) => b.price - a.price) : l;
-  }, [cat, sort]);
+  }, [cat, sort, products]);
   return (
     <section id="shop" className="scroll-mt-16 bg-[#f4f1ec] px-5 py-24 text-[#0d0d0d] sm:px-10 sm:py-28">
       <div className="mx-auto max-w-[1500px]">
@@ -398,7 +418,7 @@ function Countdown() {
 }
 
 /* -------------------------------- page -------------------------------- */
-export default function Store() {
+export default function Store({ catalog }: { catalog: CatalogValue }) {
   const [idx, setIdx] = useState(0);
   const [cat, setCat] = useState("All");
   const pickCategory = (name: string) => {
@@ -407,6 +427,7 @@ export default function Store() {
   };
   const ink = hero.colorways[idx].ink;
   return (
+    <CatalogCtx.Provider value={catalog}>
     <CartProvider>
       <div className="bg-[#0d0d0d] font-[family-name:var(--font-body)] text-white [color-scheme:light] [-webkit-tap-highlight-color:transparent] [&_.font-display]:font-[family-name:var(--font-display)]">
         <style>{`@keyframes marquee{to{transform:translateX(-50%)}}@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}@keyframes pop{0%{transform:scale(.5)}60%{transform:scale(1.35)}100%{transform:scale(1)}}@keyframes fill{from{width:0}to{width:100%}}@keyframes hop{0%{transform:none}30%{transform:translateY(-12%) rotate(-14deg) scale(1.06)}60%{transform:translateY(2%) rotate(6deg)}100%{transform:none}}@keyframes wiggle{0%,100%{transform:none}25%{transform:rotate(-8deg) scale(1.08)}75%{transform:rotate(6deg)}}@keyframes tick{from{transform:translateY(-30%);opacity:.3}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`}</style>
@@ -444,5 +465,6 @@ export default function Store() {
         <CartDrawer />
       </div>
     </CartProvider>
+    </CatalogCtx.Provider>
   );
 }

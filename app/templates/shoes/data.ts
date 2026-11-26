@@ -7,6 +7,9 @@ export const store = {
   city: "Dar es Salaam",
   announcements: ["Free delivery across Dar es Salaam", "Pay with M-Pesa, Tigo Pesa or Airtel Money", "New drop every Friday 7PM", "30-day easy exchanges"],
   nextDrop: "2026-12-04T19:00:00+03:00",
+  // Paste your Google Sheet link here to manage products from the sheet (see README.md).
+  // Leave empty to use the products listed below.
+  productsSheet: "",
 };
 
 export type Colorway = { key: string; name: string; bg: string; ink: "light" | "dark"; img: string };
@@ -36,7 +39,8 @@ export const products: Product[] = [
   { id: "aero-bone", name: "Aero Runner 01 · Bone", cat: "Sneakers", price: 185000, img: "/templates/shoes/hero-bone.jpg", bg: "#e6ddcc", sizes: [38, 39, 40, 41, 42, 43] },
 ];
 
-export const categories = [
+export type Category = { name: string; img: string; count: number };
+export const categories: Category[] = [
   { name: "Sneakers", img: "/templates/shoes/hero-volt.jpg", count: 48 },
   { name: "Running", img: "/templates/shoes/runner.jpg", count: 22 },
   { name: "Boots", img: "/templates/shoes/chelsea.jpg", count: 17 },

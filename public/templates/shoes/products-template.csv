@@ -1,0 +1,9 @@
+name,category,price,old_price,sizes,photo,badge,colour,in_stock
+Aero Runner 01 · Ember,Sneakers,185000,,39-44,/templates/shoes/hero-ember.jpg,New,#fe5816,yes
+Aero Runner 01 · Volt,Sneakers,185000,,40-45,/templates/shoes/hero-volt.jpg,New,#bfeb56,yes
+Court Hi · Shadow,Sneakers,210000,,40-44,/templates/shoes/hightop.jpg,,,yes
+Pace One · Coral,Running,165000,205000,38-43,/templates/shoes/runner.jpg,,,yes
+Mason Chelsea · Cognac,Boots,245000,,40-45,/templates/shoes/chelsea.jpg,,,yes
+Regent Oxford · Black,Formal,230000,,40-45,/templates/shoes/oxford.jpg,,,yes
+Amara Pump · Bordeaux,Heels,195000,,36-41,/templates/shoes/heel.jpg,Bestseller,,yes
+Pwani Slide · Tan,Slides,95000,,38-44,/templates/shoes/slide.jpg,,,yes
