@@ -5,7 +5,7 @@ date: "2026-11-20"
 tags: ["Landing Page", "Concept"]
 tech: ["Next.js", "TypeScript", "Tailwind CSS"]
 cover: "/projects/saas-landing.png"
-demo: "/demos/saas-landing"
+demo: "/demos/landing/saas"
 featured: true
 status: "completed"
 ---
