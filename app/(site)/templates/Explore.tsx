@@ -3,11 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { categories, type Template } from "@/lib/templates";
+import { siteConfig } from "@/site.config";
 
 const sorts = { popular: "Most popular", newest: "Newest", price: "Price ↑", az: "A–Z" } as const;
 type Sort = keyof typeof sorts;
 
-function Card({ t, i }: { t: Template; i: number }) {
+function Card({ t, i, onBuy }: { t: Template; i: number; onBuy: (t: Template) => void }) {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
   const [press, setPress] = useState(false);
@@ -34,6 +35,10 @@ function Card({ t, i }: { t: Template; i: number }) {
         <p className="shrink-0 text-sm text-zinc-400">from <span className="font-semibold text-white">${t.price}</span></p>
       </div>
       <p className="mt-3 line-clamp-2 px-1 text-sm text-zinc-400 sm:mt-2 sm:px-0">{t.blurb}</p>
+      <div className="mt-4 flex gap-2 px-1 sm:px-0">
+        <button onClick={() => onBuy(t)} className="flex-1 rounded-full bg-white py-3 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200 active:scale-[.98]">Buy template · from ${t.price}</button>
+        <Link href={t.href} className="rounded-full border border-white/15 px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/5">Preview</Link>
+      </div>
       <div className="mt-3 flex flex-wrap gap-1.5 px-1 sm:hidden">{t.features.slice(0, 3).map((f) => <span key={f} className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-zinc-400">{f}</span>)}</div>
     </article>
   );
@@ -43,6 +48,7 @@ export default function Explore({ items }: { items: Template[] }) {
   const [cat, setCat] = useState<string>("All");
   const [sort, setSort] = useState<Sort>("popular");
   const [q, setQ] = useState("");
+  const [buying, setBuying] = useState<Template | null>(null);
   const counts = useMemo(() => Object.fromEntries(categories.map((c) => [c, items.filter((t) => t.category === c).length])), [items]);
   const shown = useMemo(() => items
     .filter((t) => (cat === "All" || t.category === cat) && `${t.name} ${t.kind} ${t.category}`.toLowerCase().includes(q.toLowerCase()))
@@ -92,11 +98,48 @@ export default function Explore({ items }: { items: Template[] }) {
               {(Object.keys(sorts) as Sort[]).map((s) => <button key={s} onClick={() => setSort(s)} className={`rounded-full px-3 py-1.5 transition ${sort === s ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"}`}>{sorts[s]}</button>)}
             </div>
           </div>
-          <div className="grid gap-10 sm:grid-cols-2 sm:gap-6">{shown.map((t, i) => <Card key={t.slug} t={t} i={i} />)}</div>
+          <div className="grid gap-10 sm:grid-cols-2 sm:gap-6">{shown.map((t, i) => <Card key={t.slug} t={t} i={i} onBuy={setBuying} />)}</div>
           {!shown.length && <p className="py-20 text-center text-zinc-500">No templates match your search.</p>}
           <div className="mt-12 lg:hidden">{setup}</div>
         </div>
       </div>
+      <BuySheet t={buying} onClose={() => setBuying(null)} />
     </div>
+  );
+}
+
+/* Package picker: each tier opens its Snippe payment page (or WhatsApp if no link is set yet). */
+function BuySheet({ t, onClose }: { t: Template | null; onClose: () => void }) {
+  const tzs = (n: number) => "TZS " + n.toLocaleString("en-US");
+  const wa = (tier: string, amount: number) => `${siteConfig.whatsapp}?text=${encodeURIComponent(`Hi Joshua! I'd like to buy the ${t?.name} template, ${tier} package (${tzs(amount)}).`)}`;
+  return (
+    <>
+      <div onClick={onClose} className={`fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm transition duration-300 ${t ? "opacity-100" : "pointer-events-none opacity-0"}`} />
+      <div className={`fixed inset-x-0 bottom-0 z-[71] max-h-[90svh] overflow-y-auto rounded-t-[28px] border-t border-white/10 bg-[#0c0c12] p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] sm:inset-x-auto sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:w-[min(1000px,94vw)] sm:-translate-x-1/2 sm:rounded-3xl sm:border sm:p-8 ${t ? "translate-y-0 sm:-translate-y-1/2" : "translate-y-full sm:pointer-events-none sm:-translate-y-[45%] sm:opacity-0"}`}>
+        {t && (
+          <>
+            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-white/15 sm:hidden" />
+            <div className="flex items-start justify-between gap-4">
+              <div><p className="font-mono text-xs uppercase tracking-widest text-accent">Buy template</p><h3 className="mt-1 text-2xl font-semibold text-white sm:text-3xl">{t.name} <span className="text-zinc-400">· {t.kind}</span></h3></div>
+              <button onClick={onClose} aria-label="Close" className="text-2xl text-zinc-400 hover:text-white">✕</button>
+            </div>
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              {t.tiers.map((tier, i) => (
+                <div key={tier.name} className={`flex flex-col rounded-2xl border p-5 ${i === 1 ? "border-accent bg-accent/10" : "border-white/10 bg-white/[0.02]"}`}>
+                  <div className="flex items-center justify-between"><p className="font-semibold text-white">{tier.name}</p>{i === 1 && <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase text-white">Popular</span>}</div>
+                  <p className="mt-3 text-2xl font-semibold text-white">{tzs(tier.tzs)}</p>
+                  <p className="text-xs text-zinc-500">≈ ${tier.usd}</p>
+                  <ul className="mt-4 flex-1 space-y-1.5 text-sm text-zinc-300">{tier.includes.map((f) => <li key={f} className="flex gap-2"><span className="text-accent">✓</span>{f}</li>)}</ul>
+                  <a href={tier.pay || wa(tier.name, tier.tzs)} target="_blank" rel="noreferrer" className={`mt-5 block rounded-full py-3 text-center text-sm font-semibold transition active:scale-[.98] ${i === 1 ? "bg-white text-zinc-950 hover:bg-zinc-200" : "border border-white/15 text-white hover:bg-white/5"}`}>
+                    {tier.pay ? "Pay with M-Pesa · Card" : "Order on WhatsApp"}
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 text-center text-xs text-zinc-500">Secure payment by Snippe · M-Pesa, Tigo Pesa, Airtel Money and cards · Delivery starts once payment is confirmed</p>
+          </>
+        )}
+      </div>
+    </>
   );
 }
