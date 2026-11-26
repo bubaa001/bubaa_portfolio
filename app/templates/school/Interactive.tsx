@@ -1,82 +1,112 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { school } from "./data";
 
+const GOLD = "#f5c542";
+
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
+  const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const f = () => setScrolled(window.scrollY > 40);
-    f(); window.addEventListener("scroll", f, { passive: true });
-    return () => window.removeEventListener("scroll", f);
-  }, []);
-  const links = ["About", "Programmes", "Campus", "News", "Admissions"];
+  useEffect(() => { const f = () => setSolid(window.scrollY > 60); f(); window.addEventListener("scroll", f, { passive: true }); return () => window.removeEventListener("scroll", f); }, []);
+  const links = ["About", "Programmes", "Life", "News", "Admissions"];
   return (
-    <header className={`fixed inset-x-0 z-50 transition-all duration-500 ${scrolled ? "top-0 bg-[#0f1f3d]/95 shadow-xl backdrop-blur" : "top-9"}`}>
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
-        <a href="#" className="flex items-center gap-3 text-white">
-          <span className="grid h-11 w-11 place-items-center rounded-full border border-[#c9a227]/60 font-display text-xl text-[#e8c75a]">K</span>
-          <span className="leading-tight"><span className="block font-display text-xl">{school.name}</span><span className="block text-[10px] uppercase tracking-[0.3em] text-white/60">{school.motto}</span></span>
+    <header className={`fixed inset-x-0 top-0 z-50 transition duration-500 ${solid ? "bg-[#06080f]/85 backdrop-blur-xl" : ""}`}>
+      <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-5 text-white sm:px-10">
+        <a href="#" className="flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center rounded-full font-display text-lg italic text-[#06080f]" style={{ background: GOLD }}>K</span>
+          <span className="font-display text-2xl">{school.short}<span className="italic" style={{ color: GOLD }}>.</span></span>
         </a>
-        <nav className="hidden items-center gap-8 text-sm text-white/80 lg:flex">
-          {links.map((l) => <a key={l} href={`#${l.toLowerCase()}`} className="relative py-2 transition hover:text-white after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-[#e8c75a] after:transition-all hover:after:w-full">{l}</a>)}
-        </nav>
-        <div className="flex items-center gap-3">
-          <a href="#admissions" className="hidden rounded-full bg-[#c9a227] px-5 py-2.5 text-sm font-semibold text-[#0f1f3d] transition hover:bg-[#e8c75a] sm:block">Apply now</a>
-          <button onClick={() => setOpen(!open)} className="text-2xl text-white lg:hidden" aria-label="Menu">{open ? "✕" : "☰"}</button>
-        </div>
+        <nav className="hidden gap-10 text-sm text-white/65 lg:flex">{links.map((l) => <a key={l} href={`#${l.toLowerCase()}`} className="transition hover:text-white">{l}</a>)}</nav>
+        <a href="#admissions" className="hidden items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm transition hover:border-transparent hover:text-[#06080f] sm:flex" onMouseEnter={(e) => (e.currentTarget.style.background = GOLD)} onMouseLeave={(e) => (e.currentTarget.style.background = "")}>
+          <span className="relative flex h-2 w-2"><span className="absolute h-full w-full animate-ping rounded-full opacity-75" style={{ background: GOLD }} /><span className="relative h-2 w-2 rounded-full" style={{ background: GOLD }} /></span>Apply 2027
+        </a>
+        <button onClick={() => setOpen(!open)} className="text-2xl lg:hidden" aria-label="Menu">{open ? "✕" : "☰"}</button>
       </div>
-      {open && (
-        <div className="border-t border-white/10 bg-[#0f1f3d] px-5 pb-6 lg:hidden">
-          {links.map((l) => <a key={l} href={`#${l.toLowerCase()}`} onClick={() => setOpen(false)} className="block border-b border-white/10 py-4 text-white/90">{l}</a>)}
-          <a href="#admissions" onClick={() => setOpen(false)} className="mt-5 block rounded-full bg-[#c9a227] py-3 text-center font-semibold text-[#0f1f3d]">Apply now</a>
-        </div>
-      )}
+      {open && <div className="bg-[#06080f] px-5 pb-6 lg:hidden">{links.map((l) => <a key={l} onClick={() => setOpen(false)} href={`#${l.toLowerCase()}`} className="block border-b border-white/10 py-4 font-display text-3xl text-white">{l}</a>)}</div>}
     </header>
   );
 }
 
-export function Programmes() {
-  const [k, setK] = useState(school.programs[0].key);
-  const p = school.programs.find((x) => x.key === k)!;
+export function HeroTitle() {
+  const lines = [["We", "raise"], ["thinkers,", "makers"], ["&", "leaders."]];
+  let n = 0;
   return (
-    <div>
-      <div className="mb-10 flex flex-wrap gap-2">
-        {school.programs.map((x) => (
-          <button key={x.key} onClick={() => setK(x.key)} className={`rounded-full border px-5 py-2.5 text-sm transition ${k === x.key ? "border-[#0f1f3d] bg-[#0f1f3d] text-white" : "border-[#0f1f3d]/15 text-[#0f1f3d]/70 hover:border-[#0f1f3d]/40"}`}>{x.name}</button>
+    <h1 className="font-display text-[15vw] font-light leading-[0.88] tracking-[-0.03em] text-white sm:text-[11vw] xl:text-[10.5rem]">
+      {lines.map((line, li) => (
+        <span key={li} className="block">
+          {line.map((w) => { const i = n++; const accent = w === "leaders." || w === "makers"; return (
+            <span key={w} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+              <span className={`inline-block animate-[rise_1.1s_cubic-bezier(.16,1,.3,1)_both] ${accent ? "italic" : ""}`} style={{ animationDelay: `${200 + i * 110}ms`, color: accent ? GOLD : undefined }}>{w}&nbsp;</span>
+            </span>); })}
+        </span>
+      ))}
+    </h1>
+  );
+}
+
+export function SpinBadge() {
+  const text = "ADMISSIONS OPEN · 2027 INTAKE · ";
+  return (
+    <a href="#admissions" className="group relative grid h-36 w-36 place-items-center" aria-label="Admissions open">
+      <svg viewBox="0 0 100 100" className="absolute inset-0 animate-[spin_14s_linear_infinite]">
+        <defs><path id="circ" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0" /></defs>
+        <text fontSize="8.4" letterSpacing="2.2" fill="white"><textPath href="#circ">{text}{text}</textPath></text>
+      </svg>
+      <span className="grid h-16 w-16 place-items-center rounded-full text-2xl text-[#06080f] transition duration-500 group-hover:rotate-[-45deg] group-hover:scale-110" style={{ background: GOLD }}>→</span>
+    </a>
+  );
+}
+
+export function Programmes() {
+  const [a, setA] = useState(0);
+  return (
+    <div className="grid gap-12 lg:grid-cols-[1.25fr_1fr]">
+      <div className="border-t border-white/10">
+        {school.programs.map((p, i) => (
+          <button key={p.key} onMouseEnter={() => setA(i)} onClick={() => setA(i)} className="group block w-full border-b border-white/10 py-7 text-left">
+            <div className="flex items-baseline gap-6">
+              <span className="font-mono text-xs text-white/35">0{i + 1}</span>
+              <span className={`flex-1 font-display text-4xl transition duration-500 sm:text-6xl ${a === i ? "translate-x-3 italic text-white" : "text-white/30"}`}>{p.name}</span>
+              <span className="hidden text-sm text-white/45 sm:block">{p.ages}</span>
+            </div>
+            <div className={`grid transition-all duration-500 ${a === i ? "mt-4 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+              <div className="overflow-hidden pl-12">
+                <p className="max-w-lg text-white/60">{p.text}</p>
+                <div className="mt-4 flex flex-wrap gap-2">{p.points.map((pt) => <span key={pt} className="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70">{pt}</span>)}</div>
+              </div>
+            </div>
+          </button>
         ))}
       </div>
-      <div key={p.key} className="grid animate-[fadeUp_.6s_cubic-bezier(.16,1,.3,1)] items-center gap-10 lg:grid-cols-2">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem]">
-          <Image src={p.img} alt={p.name} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-cover" />
-          <span className="absolute left-5 top-5 rounded-full bg-white/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#0f1f3d] backdrop-blur">{p.ages}</span>
-        </div>
-        <div>
-          <h3 className="font-display text-4xl text-[#0f1f3d] sm:text-5xl">{p.name}</h3>
-          <p className="mt-5 text-lg leading-relaxed text-[#0f1f3d]/70">{p.text}</p>
-          <ul className="mt-8 space-y-4">
-            {p.points.map((pt) => <li key={pt} className="flex items-center gap-4 text-[#0f1f3d]"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#c9a227]/15 text-[#a8851a]">✓</span>{pt}</li>)}
-          </ul>
-          <a href="#admissions" className="mt-10 inline-flex items-center gap-2 font-semibold text-[#0f1f3d] underline decoration-[#c9a227] decoration-2 underline-offset-8 hover:decoration-4">Apply for {p.name} →</a>
-        </div>
+      <div className="relative hidden aspect-[4/5] overflow-hidden rounded-[2px] lg:block">
+        {school.programs.map((p, i) => <Image key={p.key} src={p.img} alt={p.name} fill sizes="40vw" className={`object-cover transition-all duration-[900ms] ${a === i ? "scale-100 opacity-100" : "scale-110 opacity-0"}`} />)}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-6"><p className="font-mono text-xs uppercase tracking-widest" style={{ color: GOLD }}>{school.programs[a].ages}</p></div>
       </div>
     </div>
   );
 }
 
-export function Testimonials() {
-  const [i, setI] = useState(0);
-  useEffect(() => { const t = setInterval(() => setI((x) => (x + 1) % school.testimonials.length), 6000); return () => clearInterval(t); }, []);
-  const t = school.testimonials[i];
+export function DayStrip() {
+  const ref = useRef<HTMLDivElement>(null);
+  const scroll = (d: number) => ref.current?.scrollBy({ left: d * 420, behavior: "smooth" });
   return (
-    <div className="mx-auto max-w-4xl text-center">
-      <p className="font-display text-7xl leading-none text-[#c9a227]">&ldquo;</p>
-      <blockquote key={i} className="animate-[fadeUp_.7s_cubic-bezier(.16,1,.3,1)] font-display text-2xl leading-snug text-white sm:text-4xl">{t.quote}</blockquote>
-      <p className="mt-8 font-semibold text-white">{t.name}</p>
-      <p className="text-sm text-white/50">{t.role}</p>
-      <div className="mt-8 flex justify-center gap-2">
-        {school.testimonials.map((_, n) => <button key={n} aria-label={`Testimonial ${n + 1}`} onClick={() => setI(n)} className={`h-1.5 rounded-full transition-all ${n === i ? "w-10 bg-[#c9a227]" : "w-4 bg-white/25"}`} />)}
+    <div>
+      <div className="mb-8 flex justify-end gap-2 px-5 sm:px-10">
+        {[-1, 1].map((d) => <button key={d} onClick={() => scroll(d)} aria-label={d < 0 ? "Previous" : "Next"} className="grid h-12 w-12 place-items-center rounded-full border border-white/20 text-white transition hover:border-transparent hover:bg-white hover:text-black">{d < 0 ? "←" : "→"}</button>)}
+      </div>
+      <div ref={ref} className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 [scrollbar-width:none] sm:px-10 [&::-webkit-scrollbar]:hidden">
+        {school.day.map((d, i) => (
+          <figure key={d.time} className="group relative aspect-[3/4] w-[78vw] shrink-0 snap-start overflow-hidden sm:w-[380px]">
+            <Image src={d.img} alt={d.title} fill sizes="380px" className="object-cover transition duration-1000 group-hover:scale-110" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/30" />
+            <span className="absolute left-5 top-5 font-mono text-xs text-white/70">{String(i + 1).padStart(2, "0")} / {String(school.day.length).padStart(2, "0")}</span>
+            <figcaption className="absolute inset-x-5 bottom-5">
+              <p className="font-display text-6xl italic" style={{ color: GOLD }}>{d.time}</p>
+              <p className="mt-1 text-xl text-white">{d.title}</p>
+            </figcaption>
+          </figure>
+        ))}
       </div>
     </div>
   );
@@ -84,16 +114,15 @@ export function Testimonials() {
 
 export function EnquiryForm() {
   const [sent, setSent] = useState(false);
-  if (sent) return <div className="rounded-3xl bg-white p-10 text-center text-[#0f1f3d]"><p className="font-display text-4xl">Thank you!</p><p className="mt-3 text-[#0f1f3d]/60">Our admissions team will call you within one working day.</p></div>;
+  if (sent) return <p className="font-display text-5xl text-white">Thank you. <em style={{ color: GOLD }}>We&apos;ll call you within a day.</em></p>;
+  const f = "w-full border-b border-white/20 bg-transparent py-4 text-lg text-white outline-none transition placeholder:text-white/35 focus:border-[#f5c542]";
   return (
-    <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-4 rounded-3xl bg-white p-6 text-[#0f1f3d] shadow-2xl sm:grid-cols-2 sm:p-8">
-      {[["Parent / guardian name", "text"], ["Phone", "tel"], ["Email", "email"], ["Child's age", "number"]].map(([l, t]) => (
-        <label key={l} className="text-sm font-medium">{l}<input required={l !== "Email"} type={t} className="mt-1.5 w-full rounded-xl border border-[#0f1f3d]/15 bg-[#faf7f0] px-4 py-3 outline-none transition focus:border-[#c9a227] focus:ring-2 focus:ring-[#c9a227]/30" /></label>
-      ))}
-      <label className="text-sm font-medium sm:col-span-2">Programme
-        <select className="mt-1.5 w-full rounded-xl border border-[#0f1f3d]/15 bg-[#faf7f0] px-4 py-3 outline-none focus:border-[#c9a227]">{school.programs.map((p) => <option key={p.key}>{p.name}</option>)}</select>
-      </label>
-      <button className="rounded-xl bg-[#0f1f3d] py-4 font-semibold text-white transition hover:bg-[#1b3366] sm:col-span-2">Request a callback</button>
+    <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-6 sm:grid-cols-2">
+      <input required placeholder="Parent / guardian name" className={f} />
+      <input required type="tel" placeholder="Phone" className={f} />
+      <input type="email" placeholder="Email" className={f} />
+      <select className={`${f} [&>option]:text-black`} defaultValue=""><option value="" disabled>Programme</option>{school.programs.map((p) => <option key={p.key}>{p.name}</option>)}</select>
+      <button className="group mt-4 flex items-center gap-4 justify-self-start rounded-full px-8 py-4 font-semibold text-[#06080f] transition hover:gap-6" style={{ background: GOLD }}>Request a callback <span>→</span></button>
     </form>
   );
 }

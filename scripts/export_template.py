@@ -4,14 +4,14 @@
     python3 scripts/export_template.py school ../client-kilele
     cd ../client-kilele && npm install && npm run dev
 
-Templates: school, school-admin, corporate, brand-kit
+Templates: shoes, corporate, school, school-admin, brand-kit
 The template becomes the site's home page; the preview bar is removed.
 """
 import json, re, shutil, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-TEMPLATES = {"school", "school-admin", "corporate", "brand-kit"}
+TEMPLATES = {"shoes", "corporate", "school", "school-admin", "brand-kit"}
 
 def main():
     if len(sys.argv) != 3 or sys.argv[1] not in TEMPLATES:
@@ -50,6 +50,8 @@ def main():
     (out / "tailwind.config.ts").write_text(tw)
     (out / "next.config.mjs").write_text("/** @type {import('next').NextConfig} */\nexport default {};\n")
     shutil.copytree(ROOT / "public/templates/img", out / "public/templates/img")
+    if name == "shoes":
+        shutil.copytree(ROOT / "public/templates/shoes", out / "public/templates/shoes")
     (out / ".gitignore").write_text("node_modules\n.next\nnext-env.d.ts\n*.tsbuildinfo\n.env*.local\n.vercel\n")
 
     pkg = json.loads((ROOT / "package.json").read_text())

@@ -44,6 +44,15 @@ export const school = {
     { quote: "Kilele gave me the discipline and the mentors to get into my first-choice university. I still visit my teachers.", name: "David Mushi", role: "Alumnus, Class of 2024" },
     { quote: "From the facilities to the values, it is the best decision we made for our children's future.", name: "Mr. & Mrs. Okello", role: "Parents of three" },
   ],
+  achievements: ["98% national exam pass rate", "National STEM champions 2026", "45 clubs & societies", "14:1 student–teacher ratio", "Exchange partners on 3 continents", "Top 10 school in the region"],
+  day: [
+    { time: "07:30", title: "Morning assembly", img: "/templates/img/campus.jpg" },
+    { time: "08:00", title: "Deep learning blocks", img: "/templates/img/classroom.jpg" },
+    { time: "10:30", title: "Labs & coding", img: "/templates/img/computers.jpg" },
+    { time: "12:30", title: "Library hour", img: "/templates/img/library.jpg" },
+    { time: "14:00", title: "Creative writing", img: "/templates/img/writing.jpg" },
+    { time: "16:00", title: "Clubs & sport", img: "/templates/img/students.jpg" },
+  ],
   steps: [
     { title: "Enquire", text: "Fill the online form or visit our admissions office." },
     { title: "Visit & assess", text: "Tour the campus; your child sits a friendly placement assessment." },

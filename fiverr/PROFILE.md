@@ -1,7 +1,7 @@
 # Seller profile
 
 **Display name:** Joshua John (username: bubaa)
-**One-liner (≤70 chars):** Premium School, Corporate & Brand Website Designer
+**One-liner (≤70 chars):** Premium Online Stores & Corporate Websites, Animated
 
 **Description (≤600 chars)**
 Hi, I'm Joshua, a web designer and developer from Tanzania. I create premium, animated websites for schools, companies and NGOs, modern school management systems, and interactive brand guideline books. Every design is already built and tested, so you get a polished result fast, customised with your logo, colours, photos and content. Clean code you own, mobile-first, fast on any connection. Message me before ordering and I'll recommend the right package.
@@ -10,7 +10,7 @@ Hi, I'm Joshua, a web designer and developer from Tanzania. I create premium, an
 **Portfolio (Fiverr profile section):** upload the covers in `public/templates/covers/` as images; no external links.
 
 ## First 30 days playbook
-1. **Day 1:** publish Gig 1 (school website) + Gig 3 (corporate website). **Day 2:** Gig 4 (brand guidelines). Use demo screenshots and scroll videos as gig images (no external links or contact details on Fiverr). Profile photo = real, friendly face.
+1. **Day 1:** publish the two flagships: shoe store + corporate website. **Day 3:** school website. **Day 5:** brand guidelines. Use demo screenshots and scroll videos as gig images (no external links or contact details on Fiverr). Profile photo = real, friendly face.
 2. **Every day:** be online on the Fiverr app; reply to every message within 1 hour (response time affects ranking).
 3. **Every day:** send 5–10 offers in *Buyer Briefs / Requests* that match your gigs — short, specific, mention the demo link.
 4. **Week 2:** publish Gig 2 (school management system).
