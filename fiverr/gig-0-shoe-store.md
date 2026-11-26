@@ -10,7 +10,7 @@
 | Delivery | 4 days | 7 days | 12 days |
 | Revisions | 2 | 3 | 5 |
 | Products | Up to 12 | Up to 50 | Up to 150 + easy product editor |
-| Included | Your logo, colours, products and photos; animated hero; cart with **WhatsApp ordering**; mobile-ready | + colourway-switching hero, categories, drop countdown, newsletter, custom domain + SEO | + online payments (M-Pesa / card via your provider), order notifications, stock & sizes management, 30 days support |
+| Included | Your logo, colours, products and photos; animated hero; cart with **WhatsApp ordering**; mobile-ready | + colourway-switching hero, categories, drop countdown, newsletter, custom domain + SEO, **editable Figma design file** | + online payments (M-Pesa / card via your provider), order notifications, stock & sizes management, 30 days support |
 
 **Extras:** AI product photo set (6 studio shots of your shoes) +$60 · extra 25 products +$40 · 48h delivery +$60
 
@@ -26,6 +26,8 @@ I'll set up a **bold, animated online store** for your shoe or sneaker brand. It
 ✦ A slide-out bag that sends the full order, sizes and total **to your WhatsApp** in one click
 ✦ A live countdown for your next drop, with a "notify me" signup
 ✦ Reviews, newsletter, payment badges (M-Pesa, Tigo Pesa, Airtel Money, Visa)
+
+**Bonus on Standard & Premium:** the full design as an editable **Figma file**, so your designer or agency can keep building on it.
 
 **Why sellers love it:**
 ✔ Loads fast on mobile data · ✔ No monthly platform fees · ✔ You own the code · ✔ Easy to add products

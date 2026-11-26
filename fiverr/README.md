@@ -26,6 +26,9 @@ Demand is maxed in all of them. The edge isn't the category, it's **quality you 
 
 All Basic prices are at or above your $50 floor, and below the market median so a new seller still looks like a good deal.
 
+## Figma design files
+STRYDE and Meridian are also in Figma as editable layers (file: "STRYDE — Premium Shoe Store Template" in your Figma drafts). For a client, duplicate the page and swap the text and photos. Regenerate after code changes by re-running the snapshot + html_to_figma step.
+
 ## Delivering an order (hours, not weeks)
 1. `python3 scripts/export_template.py <shoes|corporate|school|school-admin|brand-kit> ../client-name`
 2. Edit the client's content in `app/data.ts` (school, corporate) or the component text (brand kit, admin), swap photos in `public/templates/img/`, change colours.
