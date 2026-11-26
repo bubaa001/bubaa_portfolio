@@ -7,6 +7,7 @@ tech: ["Claude API", "Next.js", "Streaming", "Embed script"]
 cover: "/projects/ai-chatbot.png"
 demo: "/demos/ai-chat"
 featured: true
+order: 3
 status: "completed"
 ---
 

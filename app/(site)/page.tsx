@@ -4,11 +4,11 @@ import { getAllProjects, getFeaturedProjects } from "@/lib/projects";
 import ProjectCard from "@/components/ProjectCard";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
-import { MailIcon, SocialIcon, ArrowIcon } from "@/components/Icons";
+import { MailIcon, SocialIcon, ArrowIcon, WhatsAppIcon } from "@/components/Icons";
 
 export default function Home() {
   const s = siteConfig;
-  const featured = getFeaturedProjects(3);
+  const featured = getFeaturedProjects(5);
   const total = getAllProjects().length;
   const allSkills = s.skills.flatMap((g) => g.items);
 
@@ -103,7 +103,7 @@ export default function Home() {
       {/* WORK */}
       <section className="container-x scroll-mt-24 py-28">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <SectionHeading eyebrow="02 — Selected work" title="Things I've built." sub="A few projects I'm proud of. Each one has a full case study." />
+          <SectionHeading eyebrow="02 — Selected work" title="Things I've built." sub="Products I've shipped, and live demos of what I build for clients." />
           <Reveal><Link href="/projects" className="btn-ghost mb-12">All {total} projects <ArrowIcon /></Link></Reveal>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -157,12 +157,11 @@ export default function Home() {
             <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
             <p className="relative font-mono text-xs uppercase tracking-[0.25em] text-accent">05 — Contact</p>
             <h2 className="relative mt-4 text-4xl font-semibold tracking-tight text-white sm:text-6xl">Have a project in mind?</h2>
-            <p className="relative mx-auto mt-5 max-w-lg text-zinc-400">I&apos;m open to freelance work, full-time roles and interesting collaborations. Let&apos;s build something great.</p>
+            <p className="relative mx-auto mt-5 max-w-lg text-zinc-400">Freelance projects, full-time roles or a quick question: message me on WhatsApp or email and I&apos;ll reply within 24 hours.</p>
             <div className="relative mt-10 flex flex-wrap justify-center gap-3">
-              <a href={`mailto:${s.email}`} className="btn-primary"><MailIcon /> {s.email}</a>
-              {s.socials.slice(0, 2).map((x) => (
-                <a key={x.href} href={x.href} target="_blank" rel="noreferrer" className="btn-ghost"><SocialIcon label={x.label} /> {x.label}</a>
-              ))}
+              <a href={s.whatsapp} target="_blank" rel="noreferrer" className="btn-primary"><WhatsAppIcon /> WhatsApp {s.phone}</a>
+              <a href={`mailto:${s.email}`} className="btn-ghost"><MailIcon /> {s.email}</a>
+              <a href="https://github.com/bubaa001" target="_blank" rel="noreferrer" className="btn-ghost"><SocialIcon label="GitHub" /> GitHub</a>
             </div>
           </div>
         </Reveal>

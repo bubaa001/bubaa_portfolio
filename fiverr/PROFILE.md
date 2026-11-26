@@ -1,6 +1,6 @@
 # Seller profile
 
-**Display name:** Bubaa (use your real first name if you prefer — buyers trust real names)
+**Display name:** Joshua John (username: bubaa)
 **One-liner (≤70 chars):** AI Chatbots, n8n Automation & Web Scraping Developer
 
 **Description (≤600 chars)**

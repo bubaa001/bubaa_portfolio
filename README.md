@@ -1,4 +1,4 @@
-# Bubaa — Portfolio
+# Joshua John (bubaa) — Portfolio
 
 Personal portfolio built with **Next.js 15 + Tailwind CSS**. Fully static, dark premium design, scroll animations, SEO-ready.
 

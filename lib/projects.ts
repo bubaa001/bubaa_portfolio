@@ -19,6 +19,7 @@ export type Project = {
   demo?: string;
   featured: boolean;
   status: string;
+  order: number; // lower = shown first among featured
 };
 
 function parse(file: string): { meta: Project; body: string } {
@@ -39,6 +40,7 @@ function parse(file: string): { meta: Project; body: string } {
       demo: data.demo,
       featured: Boolean(data.featured),
       status: data.status ?? "completed",
+      order: typeof data.order === "number" ? data.order : 99,
     },
   };
 }
@@ -56,7 +58,7 @@ export function getAllProjects(): Project[] {
 
 export function getFeaturedProjects(limit = 3) {
   const all = getAllProjects();
-  const featured = all.filter((p) => p.featured);
+  const featured = all.filter((p) => p.featured).sort((a, b) => a.order - b.order);
   return (featured.length ? featured : all).slice(0, limit);
 }
 

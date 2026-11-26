@@ -7,6 +7,7 @@ tech: ["n8n", "Claude API", "Google Sheets", "Webhooks", "SMTP"]
 cover: "/projects/n8n-automation.png"
 demo: "/demos/automation"
 featured: true
+order: 4
 status: "completed"
 ---
 

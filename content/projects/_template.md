@@ -9,6 +9,7 @@ cover: "/projects/placeholder.svg"
 repo: "https://github.com/bubaa001/your-repo"
 demo: ""
 featured: false
+order: 10 # lower = shown first on the home page
 status: "completed" # completed | in-progress | archived
 ---
 

@@ -7,6 +7,7 @@ tech: ["Python", "Requests", "BeautifulSoup", "openpyxl"]
 cover: "/projects/web-scraper.png"
 demo: "/demos/scraper"
 featured: true
+order: 5
 status: "completed"
 ---
 

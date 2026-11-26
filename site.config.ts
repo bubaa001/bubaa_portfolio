@@ -1,27 +1,31 @@
 // ✏️  Edit this file to personalise the whole site.
 export const siteConfig = {
-  name: "Bubaa",
+  name: "Joshua John",
+  handle: "bubaa",
   title: "AI Automation Developer",
   tagline: "I build AI chatbots, automations and data tools that save small businesses hours every week.",
   avatar: "https://github.com/bubaa001.png", // or "/me.jpg" placed in /public
   bio: [
-    "Hi! I'm Bubaa, a developer who enjoys turning ideas into polished products. I care about good design, readable code and shipping things people actually use.",
-    "Replace this text in site.config.ts with your own story: what you do, what you're learning and what you're looking for next.",
+    "I'm Joshua, a full-stack developer from Dar es Salaam, Tanzania. I build products end to end: Next.js and React on the web, Flutter on mobile, and Django or Node on the backend.",
+    "I've shipped Kupon, a QR-based food payment platform for Tanzanian university cafeterias, and MURA, a Flutter habits app with its own content studio and auto-updates. Now I help businesses with AI chatbots, n8n automations and data tools that save hours every week.",
   ],
-  location: "Your City, Country",
-  email: "you@example.com",
-  url: "https://example.com", // your deployed URL (used for SEO + sitemap)
+  location: "Dar es Salaam, Tanzania · works remotely worldwide",
+  email: "joshuajohnr1@gmail.com",
+  phone: "+255 742 901 900",
+  whatsapp: "https://wa.me/255742901900",
+  url: process.env.NEXT_PUBLIC_SITE_URL
+    || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"), // used for SEO + sitemap
   resume: "", // e.g. "/resume.pdf" after dropping the PDF in /public
   available: true, // shows the "open to work" badge
   socials: [
     { label: "GitHub", href: "https://github.com/bubaa001" },
-    { label: "LinkedIn", href: "https://linkedin.com/in/your-handle" },
-    { label: "X", href: "https://x.com/your-handle" },
+    { label: "WhatsApp", href: "https://wa.me/255742901900" },
+    { label: "Email", href: "mailto:joshuajohnr1@gmail.com" },
   ],
   stats: [
-    { value: "2+", label: "Years building" },
-    { value: "20+", label: "Repos shipped" },
-    { value: "100%", label: "Client focus" },
+    { value: "26", label: "Public GitHub repos" },
+    { value: "3", label: "Platforms: web, Android, API" },
+    { value: "24h", label: "Reply time" },
   ],
   services: [
     { title: "AI Chatbots", text: "Claude-powered assistants that answer customers 24/7 from your own info. One line of code on any website." },
@@ -30,23 +34,29 @@ export const siteConfig = {
     { title: "Fix & Ship AI-built Apps", text: "Apps made with Lovable, Bolt, Cursor or Claude Code made secure, bug-free and deployed." },
   ],
   skills: [
-    { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "SQL"] },
-    { group: "Frontend", items: ["React", "Next.js", "Tailwind CSS", "HTML/CSS"] },
-    { group: "Backend", items: ["Node.js", "REST APIs", "PostgreSQL", "Supabase"] },
-    { group: "Tools", items: ["Git", "GitHub", "Vercel", "Figma"] },
+    { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "Dart", "SQL"] },
+    { group: "Web & Mobile", items: ["Next.js", "React", "Tailwind CSS", "Flutter", "PWA"] },
+    { group: "Backend & Data", items: ["Django / DRF", "Node.js", "PostgreSQL", "Prisma", "Supabase"] },
+    { group: "AI & Automation", items: ["Claude API", "n8n", "AI agents", "Web scraping", "Vercel"] },
   ],
   experience: [
     {
-      role: "Freelance Developer",
-      company: "Self-employed",
-      period: "2025 — Present",
-      description: "Building websites and web apps for clients. Replace with your real experience.",
+      role: "Founder & Developer",
+      company: "Kupon",
+      period: "2026 — Present",
+      description: "Designed and built a multi-tenant campus food payment platform (Next.js, Prisma, PostgreSQL) with student, vendor and admin apps, QR coupons and an auditable ledger.",
     },
     {
-      role: "Student / Learner",
-      company: "Your School",
-      period: "2023 — 2025",
-      description: "Studied computer science fundamentals and built side projects.",
+      role: "Mobile & Backend Developer",
+      company: "MURA",
+      period: "2026",
+      description: "Shipped a Flutter Android app with a Django REST API, push campaigns, a React publishing studio and GitHub-hosted auto-updates.",
+    },
+    {
+      role: "Informatics Student & Builder",
+      company: "University (final-year project 2026)",
+      period: "2025 — 2026",
+      description: "Built Django and React systems including Kantiine (canteen ordering with roles, wallet and coupons) and a team final-year project.",
     },
   ],
   nav: [
