@@ -1,0 +1,274 @@
+{
+  "name": "AI Lead Qualifier (Claude → Sheets → Email)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "96875a36-3df4-5924-a108-98fc6b0c5829",
+      "name": "Lead form (Webhook)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "d22b15e4-1f23-54cd-8bc6-41726e4d6c26"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Builds the Claude request from the form submission.\nconst lead = $json.body ?? $json;\nconst SYSTEM = \"You qualify inbound sales leads for a small web & AI automation studio.\\nServices: websites, AI chatbots, n8n automations, web scraping. Typical project: $150\\u2013$3,000.\\nScore the lead 0\\u2013100 on fit, intent, budget and urgency. tier: hot (>=70), warm (40\\u201369), cold (<40).\\nBe fair: short or vague messages are warm/cold, not hot. Spam or unrelated = cold with score < 10.\\nreply_draft: a friendly 2\\u20134 sentence first reply the owner could send, specific to the request, ending with one clear question. No placeholders like [Name] \\u2014 use the lead's name if given.\";\nconst SCHEMA = {\"type\": \"object\", \"additionalProperties\": false, \"required\": [\"score\", \"tier\", \"intent\", \"budget_fit\", \"urgency\", \"summary\", \"next_step\", \"reply_draft\"], \"properties\": {\"score\": {\"type\": \"integer\"}, \"tier\": {\"type\": \"string\", \"enum\": [\"hot\", \"warm\", \"cold\"]}, \"intent\": {\"type\": \"string\"}, \"budget_fit\": {\"type\": \"string\", \"enum\": [\"high\", \"medium\", \"low\", \"unknown\"]}, \"urgency\": {\"type\": \"string\", \"enum\": [\"high\", \"medium\", \"low\"]}, \"summary\": {\"type\": \"string\"}, \"next_step\": {\"type\": \"string\"}, \"reply_draft\": {\"type\": \"string\"}}};\nreturn [{ json: {\n  lead,\n  request: {\n    model: 'claude-opus-5-5',\n    max_tokens: 2048,\n    output_config: { effort: 'low', format: { type: 'json_schema', schema: SCHEMA } },\n    system: SYSTEM,\n    messages: [{ role: 'user', content: 'New lead from the website form:\\n<lead>\\n' + JSON.stringify(lead, null, 2) + '\\n</lead>' }],\n  },\n} }];"
+      },
+      "id": "1d3b82a9-6157-54d2-87ca-7ec1a0d380d9",
+      "name": "Build Claude request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2026-10-21"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.request) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "2ef98546-b775-5268-a771-d10cf487f150",
+      "name": "Claude: qualify lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Anthropic API key (x-api-key)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parses Claude's JSON answer and merges it with the lead.\nconst lead = $('Build Claude request').first().json.lead;\nconst res = $json;\nif (res.stop_reason === 'refusal') {\n  return [{ json: { ...lead, score: 0, tier: 'cold', summary: 'Flagged by AI safety filter', received_at: new Date().toISOString() } }];\n}\nconst text = (res.content || []).find(b => b.type === 'text')?.text || '{}';\nconst q = JSON.parse(text);\nreturn [{ json: { received_at: new Date().toISOString(), ...lead, ...q } }];"
+      },
+      "id": "eae92a8f-6957-586e-810d-826b6a8fc970",
+      "name": "Parse result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "f9930c62-b072-5693-86ea-80c73a8fa7f7",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        880,
+        160
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "hot",
+              "leftValue": "={{ $json.tier }}",
+              "rightValue": "hot",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dc7d53df-6491-5c57-b9ed-31740dfe3e61",
+      "name": "Hot lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        880,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "alerts@yourdomain.com",
+        "toEmail": "you@yourdomain.com",
+        "subject": "=🔥 Hot lead ({{ $json.score }}/100): {{ $json.name }} — {{ $json.intent }}",
+        "emailFormat": "text",
+        "text": "={{ $json.summary }}\n\nBudget fit: {{ $json.budget_fit }} · Urgency: {{ $json.urgency }}\nEmail: {{ $json.email }}\n\nNext step: {{ $json.next_step }}\n\nSuggested reply:\n{{ $json.reply_draft }}",
+        "options": {}
+      },
+      "id": "a89c7bdc-3e1d-5c68-9de9-5e0ef7667fa8",
+      "name": "Email owner: hot lead",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        320
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, tier: $('Parse result').first().json.tier }) }}",
+        "options": {}
+      },
+      "id": "c455407e-494b-53f4-84ab-bc5468261b16",
+      "name": "Reply to form",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1100,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Lead form (Webhook)": {
+      "main": [
+        [
+          {
+            "node": "Build Claude request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Claude request": {
+      "main": [
+        [
+          {
+            "node": "Claude: qualify lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude: qualify lead": {
+      "main": [
+        [
+          {
+            "node": "Parse result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse result": {
+      "main": [
+        [
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Hot lead?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hot lead?": {
+      "main": [
+        [
+          {
+            "node": "Email owner: hot lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Reply to form",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply to form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

@@ -6,7 +6,7 @@ tags: ["Dashboard", "Web App", "Concept"]
 tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "SVG charts"]
 cover: "/projects/admin-dashboard.png"
 demo: "/demos/dashboard"
-featured: true
+featured: false
 status: "completed"
 ---
 

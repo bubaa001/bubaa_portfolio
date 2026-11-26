@@ -1,12 +1,12 @@
 ---
-title: "Pulse — SaaS Landing Page"
-summary: "A high-converting landing page for an analytics startup: hero with product preview, features, pricing toggle, FAQ and email capture."
+title: "Landing Page Template Kit — 3 Businesses"
+summary: "One config-driven landing page engine shown as a SaaS startup, a restaurant and a local plumber, each with a working lead form that emails the owner."
 date: "2026-11-20"
 tags: ["Landing Page", "Concept"]
 tech: ["Next.js", "TypeScript", "Tailwind CSS"]
 cover: "/projects/saas-landing.png"
 demo: "/demos/landing/saas"
-featured: true
+featured: false
 status: "completed"
 ---
 

@@ -1,0 +1,212 @@
+{
+  "name": "Competitor Price Monitor (daily scrape → email alert)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "1d6a3a2b-9135-5682-9660-b11cdb9c3951",
+      "name": "Every morning 8:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://books.toscrape.com/catalogue/category/books/travel_2/index.html",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "5f1556a6-0144-582a-8b8e-48861d3cbd51",
+      "name": "Fetch competitor page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "data",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "titles",
+              "cssSelector": "article.product_pod h3 a",
+              "returnValue": "attribute",
+              "attribute": "title",
+              "returnArray": true
+            },
+            {
+              "key": "prices",
+              "cssSelector": "article.product_pod p.price_color",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "id": "fbb05513-8959-57f2-8cf0-502b4bf6ed3c",
+      "name": "Extract products",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Compares today's prices with the last run (stored in workflow static data).\nconst store = $getWorkflowStaticData('global');\nconst prev = store.prices || {};\nconst items = $input.all().map(i => i.json);\nconst now = {};\nconst changes = [];\nfor (const it of items) {\n  const titles = it.titles || [], prices = it.prices || [];\n  titles.forEach((t, i) => {\n    const p = parseFloat(String(prices[i] || '').replace(/[^0-9.]/g, ''));\n    if (!t || isNaN(p)) return;\n    now[t] = p;\n    if (prev[t] !== undefined && prev[t] !== p) changes.push({ product: t, old_price: prev[t], new_price: p, change_pct: +(((p - prev[t]) / prev[t]) * 100).toFixed(1) });\n    if (prev[t] === undefined && Object.keys(prev).length) changes.push({ product: t, old_price: null, new_price: p, change_pct: null });\n  });\n}\nstore.prices = now;\nconst checked_at = new Date().toISOString();\nreturn [{ json: { checked_at, tracked: Object.keys(now).length, changed: changes.length, changes } }];"
+      },
+      "id": "1a305962-3da0-5bd0-950f-ac62d8a1553d",
+      "name": "Compare with yesterday",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "changed",
+              "leftValue": "={{ $json.changed }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "345d82ac-c6a8-5e2a-944d-0778edf909af",
+      "name": "Any changes?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "alerts@yourdomain.com",
+        "toEmail": "you@yourdomain.com",
+        "subject": "=📈 {{ $json.changed }} competitor price change(s) today",
+        "emailFormat": "text",
+        "text": "={{ $json.changes.map(c => `${c.product}: ${c.old_price ?? 'new'} → ${c.new_price}${c.change_pct !== null ? ` (${c.change_pct}%)` : ''}`).join('\\n') }}",
+        "options": {}
+      },
+      "id": "019d2a20-c7ee-5e37-b470-4bef2f4dc3b0",
+      "name": "Email price alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        220
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every morning 8:00": {
+      "main": [
+        [
+          {
+            "node": "Fetch competitor page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch competitor page": {
+      "main": [
+        [
+          {
+            "node": "Extract products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract products": {
+      "main": [
+        [
+          {
+            "node": "Compare with yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare with yesterday": {
+      "main": [
+        [
+          {
+            "node": "Any changes?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any changes?": {
+      "main": [
+        [
+          {
+            "node": "Email price alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

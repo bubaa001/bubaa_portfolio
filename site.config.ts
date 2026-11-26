@@ -1,8 +1,8 @@
 // ✏️  Edit this file to personalise the whole site.
 export const siteConfig = {
   name: "Bubaa",
-  title: "Full-Stack Web Developer",
-  tagline: "I design and build fast, accessible web products — from idea to production.",
+  title: "AI Automation Developer",
+  tagline: "I build AI chatbots, automations and data tools that save small businesses hours every week.",
   avatar: "https://github.com/bubaa001.png", // or "/me.jpg" placed in /public
   bio: [
     "Hi! I'm Bubaa, a developer who enjoys turning ideas into polished products. I care about good design, readable code and shipping things people actually use.",
@@ -24,10 +24,10 @@ export const siteConfig = {
     { value: "100%", label: "Client focus" },
   ],
   services: [
-    { title: "Landing Pages", text: "Fast, responsive, SEO-ready landing pages that turn visitors into leads and customers." },
-    { title: "Dashboards & Web Apps", text: "Admin panels, SaaS MVPs and internal tools with auth, data and clean UI." },
-    { title: "AI Chatbots", text: "Website assistants that answer from your own info, powered by Claude or OpenAI." },
-    { title: "Fix & Deploy", text: "Broken Next.js builds, Vercel errors and AI-built apps (Lovable, Bolt, v0) made production-ready." },
+    { title: "AI Chatbots", text: "Claude-powered assistants that answer customers 24/7 from your own info. One line of code on any website." },
+    { title: "n8n AI Automation", text: "Workflows that qualify leads, sync your tools and send alerts, so your business runs while you sleep." },
+    { title: "Web Scraping", text: "Any website turned into a clean Excel, CSV or Google Sheet, one-off or on a schedule." },
+    { title: "Fix & Ship AI-built Apps", text: "Apps made with Lovable, Bolt, Cursor or Claude Code made secure, bug-free and deployed." },
   ],
   skills: [
     { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "SQL"] },

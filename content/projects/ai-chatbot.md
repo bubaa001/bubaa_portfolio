@@ -1,9 +1,9 @@
 ---
 title: "Ember — AI Chatbot for a Restaurant"
-summary: "A website support chatbot that answers questions about hours, menu, allergies and bookings, with streaming replies and quick-reply buttons."
+summary: "A Claude-powered support chatbot that answers only from the business's own info and installs on any website (WordPress, Shopify, Wix) with one line of code."
 date: "2026-11-24"
 tags: ["AI", "Chatbot", "Concept"]
-tech: ["Next.js", "React", "Claude / OpenAI API", "Tailwind CSS"]
+tech: ["Claude API", "Next.js", "Streaming", "Embed script"]
 cover: "/projects/ai-chatbot.png"
 demo: "/demos/ai-chat"
 featured: true
@@ -19,5 +19,8 @@ Concept project: a small business wants to stop answering the same questions on 
 - Answers from the business's own information (hours, menu, policies)
 - Hand-off to a human when it doesn't know
 
-## Note
-This demo runs on scripted answers so it works without an API key. Client builds connect to Claude or OpenAI and are trained on the client's own documents and FAQs.
+## Built like a product
+- **Real AI:** streams answers from Claude, grounded in a per-client knowledge file
+- **Embed anywhere:** `<script src=".../embed.js" data-bot="client-id">` works on any website
+- **Safe:** knowledge and API key stay on the server; rate limiting; refuses off-topic questions; hands off to a human
+- **New client in hours:** copy one config (business info, colors, quick replies), deploy
