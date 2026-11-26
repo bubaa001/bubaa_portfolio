@@ -125,7 +125,7 @@ function MobileBagBar() {
 }
 
 /* -------------------------------- nav -------------------------------- */
-function Nav({ ink }: { ink: "light" | "dark" }) {
+function Nav({ ink, setCatFromNav }: { ink: "light" | "dark"; setCatFromNav?: (c: string) => void }) {
   const { lines, setOpen, bump } = useCart();
   const [solid, setSolid] = useState(false);
   useEffect(() => { const f = () => setSolid(window.scrollY > 80); f(); window.addEventListener("scroll", f, { passive: true }); return () => window.removeEventListener("scroll", f); }, []);
@@ -135,7 +135,7 @@ function Nav({ ink }: { ink: "light" | "dark" }) {
     <header className={`fixed inset-x-0 top-9 z-50 transition-all duration-500 ${solid ? "!top-0 bg-[#0d0d0d]/90 backdrop-blur-xl" : ""}`}>
       <div className={`mx-auto flex h-16 max-w-[1500px] items-center justify-between px-5 transition-colors duration-700 sm:px-10 ${c}`}>
         <a href="#" className="font-display text-3xl tracking-wide">{store.name}</a>
-        <nav className="hidden gap-8 text-sm font-medium lg:flex">{["New drops", "Men", "Women", "Running", "Sale"].map((l) => <a key={l} href="#shop" className="relative after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-current after:transition-all hover:after:w-full">{l}</a>)}</nav>
+        <nav className="hidden gap-8 text-sm font-medium lg:flex">{["New drops", "Men", "Women", "Running", "Sale"].map((l) => <a key={l} href="#shop" onClick={() => setCatFromNav?.(l === "Running" ? "Running" : "All")} className="relative after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-current after:transition-all hover:after:w-full">{l}</a>)}</nav>
         <div className="flex items-center gap-4">
           <a href="#shop" aria-label="Search" className="hidden sm:block"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg></a>
           <button key={bump} onClick={() => setOpen(true)} className={`relative flex items-center gap-2 rounded-full border border-current px-4 py-2 text-sm font-semibold ${bump ? "animate-[wiggle_.5s]" : ""}`} aria-label="Open bag">
@@ -245,39 +245,68 @@ function Hero({ idx, setIdx }: { idx: number; setIdx: (i: number) => void }) {
 }
 
 /* ----------------------------- categories ----------------------------- */
-function Categories() {
-  const touchDev = useIsTouch();
+function Categories({ onPick }: { onPick: (name: string) => void }) {
   const [hover, setHover] = useState<number | null>(null);
-  const [spy, setSpy] = useState<number | null>(null);
+  const [spy, setSpy] = useState(0);
+  const [mobile, setMobile] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
-  const rows = useRef<(HTMLAnchorElement | null)[]>([]);
-  // phones: the row in the middle of the screen becomes "active" as you scroll
+  const rows = useRef<(HTMLButtonElement | null)[]>([]);
+  useEffect(() => { const m = window.matchMedia("(max-width: 1023px)"); setMobile(m.matches); const f = () => setMobile(m.matches); m.addEventListener("change", f); return () => m.removeEventListener("change", f); }, []);
+  // phones/tablets: the pinned photo follows the list as you scroll
   useEffect(() => {
-    if (!touchDev) return;
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) setSpy(Number((e.target as HTMLElement).dataset.i)); }), { rootMargin: "-42% 0px -42% 0px" });
-    rows.current.forEach((r) => r && io.observe(r));
-    return () => io.disconnect();
-  }, [touchDev]);
-  const active = touchDev ? spy : hover;
+    if (!mobile) return;
+    let raf = 0;
+    const calc = () => {
+      raf = 0;
+      // the active category is the last row whose middle has scrolled above the trigger line
+      const line = window.innerHeight * 0.62;
+      let best = 0;
+      rows.current.forEach((r, i) => { if (!r) return; const b = r.getBoundingClientRect(); if (b.top + b.height / 2 < line) best = i; });
+      setSpy((prev) => { if (prev !== best) buzz(8); return best; });
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(calc); };
+    calc(); window.addEventListener("scroll", on, { passive: true }); window.addEventListener("resize", on);
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); cancelAnimationFrame(raf); };
+  }, [mobile]);
+  const active = mobile ? spy : hover;
   return (
     <section className="relative bg-[#0d0d0d] px-5 py-24 text-white sm:px-10 sm:py-28" onMouseMove={(e) => setPos({ x: e.clientX, y: e.clientY })}>
       <div className="mx-auto max-w-[1500px]">
-        <p className="mb-10 font-mono text-xs uppercase tracking-[0.25em] text-white/40">(01) Shop by category</p>
+        <p className="mb-8 font-mono text-xs uppercase tracking-[0.25em] text-white/40 lg:mb-10">(01) Shop by category</p>
+
+        {/* phones/tablets: photo pinned at the top, swaps as you scroll the list */}
+        <div className="sticky top-[4.75rem] z-10 mb-6 lg:hidden">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-3xl bg-[#e8e5e1] shadow-2xl shadow-black/50">
+            {categories.map((c, i) => (
+              <Image key={c.name} src={c.img} alt={c.name} fill sizes="100vw"
+                className={`object-cover transition-all duration-700 ease-[cubic-bezier(.16,1,.3,1)] ${spy === i ? "scale-100 opacity-100" : i < spy ? "-translate-y-6 scale-110 opacity-0" : "translate-y-6 scale-110 opacity-0"}`} />
+            ))}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent" />
+            <div className="absolute inset-x-4 bottom-4 flex items-end justify-between">
+              <div key={spy} className="animate-[fadeUp_.45s_cubic-bezier(.16,1,.3,1)]">
+                <p className="font-display text-4xl uppercase leading-none">{categories[spy].name}</p>
+                <p className="mt-1 text-xs text-white/70">{categories[spy].count} styles · tap to shop</p>
+              </div>
+              <div className="flex gap-1">{categories.map((c, i) => <span key={c.name} className={`h-1.5 rounded-full transition-all duration-500 ${spy === i ? "w-5 bg-[#ff4d1f]" : "w-1.5 bg-white/40"}`} />)}</div>
+            </div>
+          </div>
+        </div>
+
         <div className="border-t border-white/10">
           {categories.map((c, i) => (
-            <a key={c.name} ref={(el) => { rows.current[i] = el; }} data-i={i} href="#shop" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} className="group flex items-center justify-between gap-4 border-b border-white/10 py-4 sm:items-baseline sm:py-5">
-              <span className={`font-display text-[15vw] uppercase leading-none transition duration-500 sm:text-[9rem] ${active === null || active === i ? "text-white" : "text-white/15"} ${active === i ? "translate-x-2 !text-[#ff4d1f] sm:translate-x-4" : ""}`}>{c.name}</span>
-              {/* phones: inline thumbnail slides in for the active row */}
-              <span className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-xl transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] sm:hidden ${active === i ? "translate-x-0 rotate-[-4deg] opacity-100" : "translate-x-6 opacity-0"}`}>
-                <Image src={c.img} alt="" fill sizes="96px" className="object-cover" />
-              </span>
-              <span className="hidden font-mono text-sm text-white/40 sm:inline">{c.count} styles ↗</span>
-            </a>
+            <button key={c.name} ref={(el) => { rows.current[i] = el; }} type="button"
+              onClick={() => { buzz(20); onPick(c.name); }}
+              onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}
+              className="group flex w-full items-center justify-between gap-4 border-b border-white/10 py-5 text-left active:opacity-70 lg:items-baseline">
+              <span className={`font-display text-[15vw] uppercase leading-none transition duration-500 lg:text-[9rem] ${active === null || active === i ? "text-white" : "text-white/15"} ${active === i ? "translate-x-2 !text-[#ff4d1f] lg:translate-x-4" : ""}`}>{c.name}</span>
+              <span className={`font-mono text-sm transition ${active === i ? "text-white" : "text-white/40"}`}>{c.count} <span className="hidden sm:inline">styles</span> ↗</span>
+            </button>
           ))}
         </div>
+        <div className="h-[30vh] lg:hidden" aria-hidden />
       </div>
       {/* desktop: cursor-following preview */}
-      <div className="pointer-events-none fixed left-0 top-0 z-40 hidden h-64 w-80 overflow-hidden rounded-2xl shadow-2xl transition-[opacity,transform] duration-300 lg:block" style={{ transform: `translate(${pos.x + 24}px, ${pos.y - 128}px) rotate(${hover !== null ? -4 : 0}deg) scale(${hover !== null ? 1 : 0.6})`, opacity: hover !== null && !touchDev ? 1 : 0 }}>
+      <div className="pointer-events-none fixed left-0 top-0 z-40 hidden h-64 w-80 overflow-hidden rounded-2xl shadow-2xl transition-[opacity,transform] duration-300 lg:block" style={{ transform: `translate(${pos.x + 24}px, ${pos.y - 128}px) rotate(${hover !== null ? -4 : 0}deg) scale(${hover !== null ? 1 : 0.6})`, opacity: hover !== null && !mobile ? 1 : 0 }}>
         {categories.map((c, i) => <Image key={c.name} src={c.img} alt="" fill sizes="320px" className={`object-cover transition-opacity duration-300 ${hover === i ? "opacity-100" : "opacity-0"}`} />)}
       </div>
     </section>
@@ -316,9 +345,8 @@ function ProductCard({ p, i }: { p: Product; i: number }) {
   );
 }
 
-function Shop() {
+function Shop({ cat, setCat }: { cat: string; setCat: (c: string) => void }) {
   const cats = ["All", ...Array.from(new Set(products.map((p) => p.cat)))];
-  const [cat, setCat] = useState("All");
   const [sort, setSort] = useState("featured");
   const list = useMemo(() => {
     const l = products.filter((p) => cat === "All" || p.cat === cat);
@@ -372,6 +400,11 @@ function Countdown() {
 /* -------------------------------- page -------------------------------- */
 export default function Store() {
   const [idx, setIdx] = useState(0);
+  const [cat, setCat] = useState("All");
+  const pickCategory = (name: string) => {
+    setCat(name);
+    requestAnimationFrame(() => document.getElementById("shop")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
   const ink = hero.colorways[idx].ink;
   return (
     <CartProvider>
@@ -380,11 +413,11 @@ export default function Store() {
         <div className="relative z-[60] h-9 overflow-hidden bg-[#0d0d0d] text-xs font-semibold uppercase tracking-widest text-white">
           <div className="flex h-full w-max animate-[marquee_25s_linear_infinite] items-center gap-10">{[...store.announcements, ...store.announcements, ...store.announcements, ...store.announcements].map((a, i) => <span key={i} className="flex items-center gap-10">{a}<span className="text-[#ff4d1f]">✦</span></span>)}</div>
         </div>
-        <Nav ink={ink} />
+        <Nav ink={ink} setCatFromNav={setCat} />
         <Hero idx={idx} setIdx={setIdx} />
         <div className="overflow-hidden border-y border-white/10 bg-[#ff4d1f] py-4 sm:py-5"><div className="flex w-max animate-[marquee_18s_linear_infinite] gap-10 font-display text-4xl uppercase text-[#0d0d0d] sm:gap-12 sm:text-5xl">{Array.from({ length: 8 }).map((_, i) => <span key={i} className="flex items-center gap-10 sm:gap-12">{store.tagline}<span className="text-white">●</span>Walk different<span className="text-white">●</span></span>)}</div></div>
-        <Categories />
-        <Shop />
+        <Categories onPick={pickCategory} />
+        <Shop cat={cat} setCat={setCat} />
         <Countdown />
         <section className="bg-[#f4f1ec] py-24 text-[#0d0d0d] sm:px-10 sm:py-28">
           <div className="mx-auto max-w-[1500px]">
