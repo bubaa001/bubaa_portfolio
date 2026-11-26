@@ -1,39 +1,36 @@
-# Fiverr launch kit (data-backed)
+# Fiverr launch kit: premium templates
 
-**Goal: sell what's already in demand.** Gig choice and prices come from the
-[fiverr-gig-optimizer](https://github.com/Ahad690/fiverr-gig-optimizer) scoring scripts run on its
-community dataset (1,257 unique gigs scraped Jun–Nov 2026), plus Fiverr's own
-[June 2026 Business Trends Index](https://www.fiverr.com/news/business-trends-index-ai-2026).
+**What we sell:** premium, animated templates, customised for each buyer (name, logo, colours, photos, content) and deployed for them.
+Every gig has a live demo on the portfolio's `/templates` page, and covers in `public/templates/covers/` to use as gig images.
 
-## Keyword scores (optimizer output)
-| Keyword | Competing gigs | Demand | Opportunity |
+## Why these four (gig-optimizer data, 1,257 Fiverr gigs, Jun–Nov 2026)
+| Keyword | Competing gigs | Demand | Market median (Basic / Standard / Premium) |
 |---|---|---|---|
-| web scraping python | 12,978 | 100 | **45** |
-| ai chatbot website | 13,895 | 100 | **44** |
-| n8n automation | 13,280 | 100 | **44** |
-| react dashboard | 4,580 | 52 | 36 |
-| claude code | 4,165 | 4 | 18 (Fiverr: searches **+938%** in 6 months; emerging) |
-| nextjs landing page | 23,482 | 30 | **12** ← dropped as a gig |
+| school website / company website | 62,386 | **100** | $98 / $243 / $475 (websites, n=190) |
+| brand guidelines / identity kit | 18,434 | **100** | $120 / $203 / $310 (n=39) |
+| school / management system | (no exact match) | — | $45 / $300 / $585 (n=16) |
+
+Demand is maxed in all of them. The edge isn't the category, it's **quality you can see before buying**: live, animated demos instead of static screenshots, plus fast delivery because the product already exists.
 
 ## The line-up
-| # | Gig | Your price (B / S / P) | Market median (B / S / P) | Live proof |
-|---|---|---|---|---|
-| 1 | [AI chatbot for your website](gig-1-ai-chatbot.md) | $50 / $250 / $650 | $100 / $450 / $925 | `/demos/ai-chat` |
-| 2 | [n8n AI automation](gig-2-n8n-automation.md) | $40 / $150 / $400 | $55 / $275 / $500 | `/demos/automation` |
-| 3 | [Web scraping → Excel / Sheets](gig-3-web-scraping.md) | $15 / $45 / $120 | $30 / $60 / $130 | `/demos/scraper` |
-| 4 | [Fix & ship AI-built apps](gig-4-fix-ai-apps.md) | $40 / $150 / $450 | $105 / $475 / $1,325 (n=6, low confidence) | this portfolio + Vercel fix |
+| # | Gig | Basic / Standard / Premium | Demo |
+|---|---|---|---|
+| 1 | [Premium school website](gig-1-school-website.md) | $79 / $179 / $349 | `/templates/school` |
+| 2 | [School management system](gig-2-school-management-system.md) | $149 / $349 / $699 | `/templates/school-admin` |
+| 3 | [Corporate / official website](gig-3-corporate-website.md) | $99 / $229 / $449 | `/templates/corporate` |
+| 4 | [Brand guidelines toolkit](gig-4-brand-guidelines.md) | $69 / $149 / $299 | `/templates/brand-kit` |
 
-The optimizer's "new seller" suggestion is the market's 10th–25th percentile on Basic. Above, Basic sits slightly above that (so orders aren't worthless) and Premium stays below the median (so it still looks like a deal with 0 reviews). **Raise prices ~20% after every 5 five-star reviews.**
+All Basic prices are at or above your $50 floor, and below the market median so a new seller still looks like a good deal.
 
-**Launch order:** Gig 1 and Gig 2 on day 1 (highest price and demand). Gig 3 (fast, cheap wins → early reviews) on day 2. Gig 4 in week 2.
+## Delivering an order (hours, not weeks)
+1. `python3 scripts/export_template.py <school|school-admin|corporate|brand-kit> ../client-name`
+2. Edit the client's content in `app/data.ts` (school, corporate) or the component text (brand kit, admin), swap photos in `public/templates/img/`, change colours.
+3. `npm install && npm run dev` to check, push to a new GitHub repo, import on Vercel, connect their domain.
+4. Deliver: live link + source code zip + a 3-minute screen recording showing how to edit.
 
-**On demand = productized.** Each gig maps to a ready product in this repo, so an order is configuration plus testing, not building from scratch:
-- Chatbot: copy a bot in `lib/chatbot/config.ts`, deploy, give the client the one-line embed code.
-- n8n: start from `products/n8n/*.json`, swap the prompt, form fields and credentials.
-- Scraping: write `products/scraper/configs/<client>.json`, run, deliver Excel.
+## Fiverr rules (important)
+- Don't put links to your portfolio, phone or email in gig text or messages. Show demos as **gig gallery images and a gig video** (screen-record scrolling the live demo; Fiverr allows up to 75 seconds).
+- Photos in the demos are Unsplash (free commercial licence). Clients' own photos replace them on delivery.
+- The School Management System Basic/Standard tiers are front-end with browser storage; a real multi-user backend (logins per teacher, database) is the Premium tier. Say this clearly so nobody expects a full ERP for $149.
 
-## Rules
-- Demos are labeled concept/practice work; never claim they were paid client jobs.
-- Never take payment or contact outside Fiverr.
-- Chatbot and n8n gigs: the client pays their own Claude API usage (usually a few $/month). Say so in the gig.
-- Scraping: only public data, respect the site's terms and robots.txt, no personal data.
+The earlier AI-services gigs are kept in `archive/`.

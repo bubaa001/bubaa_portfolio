@@ -2,12 +2,12 @@
 export const siteConfig = {
   name: "Joshua John",
   handle: "bubaa",
-  title: "AI Automation Developer",
-  tagline: "I build AI chatbots, automations and data tools that save small businesses hours every week.",
+  title: "Premium Web Designer & Developer",
+  tagline: "Premium, animated websites, school systems and brand kits, customised for you and delivered fast.",
   avatar: "https://github.com/bubaa001.png", // or "/me.jpg" placed in /public
   bio: [
     "I'm Joshua, a full-stack developer from Dar es Salaam, Tanzania. I build products end to end: Next.js and React on the web, Flutter on mobile, and Django or Node on the backend.",
-    "I've shipped Kupon, a QR-based food payment platform for Tanzanian university cafeterias, and MURA, a Flutter habits app with its own content studio and auto-updates. Now I help businesses with AI chatbots, n8n automations and data tools that save hours every week.",
+    "I've shipped Kupon, a QR-based food payment platform for Tanzanian university cafeterias, and MURA, a Flutter habits app with its own content studio and auto-updates. Now I design premium templates for schools, companies and brands, and customise them for each client.",
   ],
   location: "Dar es Salaam, Tanzania · works remotely worldwide",
   email: "joshuajohnr1@gmail.com",
@@ -28,10 +28,10 @@ export const siteConfig = {
     { value: "24h", label: "Reply time" },
   ],
   services: [
-    { title: "AI Chatbots", text: "Claude-powered assistants that answer customers 24/7 from your own info. One line of code on any website." },
-    { title: "n8n AI Automation", text: "Workflows that qualify leads, sync your tools and send alerts, so your business runs while you sleep." },
-    { title: "Web Scraping", text: "Any website turned into a clean Excel, CSV or Google Sheet, one-off or on a schedule." },
-    { title: "Fix & Ship AI-built Apps", text: "Apps made with Lovable, Bolt, Cursor or Claude Code made secure, bug-free and deployed." },
+    { title: "School Websites", text: "Premium, animated websites that turn visiting parents into admissions enquiries." },
+    { title: "School Management Systems", text: "Students, attendance, grades, fees and timetables in one calm dashboard." },
+    { title: "Corporate Websites", text: "Editorial, high-trust websites for companies, NGOs and institutions." },
+    { title: "Brand Guidelines Kits", text: "Interactive brand books: logo rules, palette, typography and social templates." },
   ],
   skills: [
     { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "Dart", "SQL"] },
@@ -61,6 +61,7 @@ export const siteConfig = {
   ],
   nav: [
     { label: "About", href: "/#about" },
+    { label: "Templates", href: "/templates" },
     { label: "Work", href: "/projects" },
     { label: "Skills", href: "/#skills" },
     { label: "Experience", href: "/#experience" },

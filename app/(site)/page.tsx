@@ -44,7 +44,8 @@ export default function Home() {
           </Reveal>
           <Reveal delay={300}>
             <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Link href="/projects" className="btn-primary">See my work <ArrowIcon /></Link>
+              <Link href="/templates" className="btn-primary">Browse templates <ArrowIcon /></Link>
+              <Link href="/projects" className="btn-ghost">See my work</Link>
               <a href="#contact" className="btn-ghost">Let&apos;s talk</a>
               {s.resume && <a href={s.resume} target="_blank" className="btn-ghost">Résumé</a>}
               <div className="ml-2 flex gap-1">
