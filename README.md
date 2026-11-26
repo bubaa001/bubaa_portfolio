@@ -29,3 +29,9 @@ content/projects/ one Markdown file per project
 lib/projects.ts   loads + renders project files
 site.config.ts    your details
 ```
+
+## Live demos
+Concept demos that showcase each Fiverr gig live at `/demos/saas-landing`, `/demos/dashboard` and `/demos/ai-chat` (code in `app/demos/`). Portfolio pages live in `app/(site)/`.
+
+## Fiverr
+Ready-to-paste gig listings, prices and a 30-day plan are in [`fiverr/`](fiverr/README.md).

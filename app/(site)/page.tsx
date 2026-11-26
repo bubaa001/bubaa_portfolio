@@ -87,7 +87,7 @@ export default function Home() {
 
       {/* SERVICES */}
       <section className="container-x pb-28">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {s.services.map((sv, i) => (
             <Reveal key={sv.title} delay={i * 100}>
               <div className="card h-full p-7">

@@ -1,7 +1,7 @@
 // ✏️  Edit this file to personalise the whole site.
 export const siteConfig = {
   name: "Bubaa",
-  title: "Software Developer",
+  title: "Full-Stack Web Developer",
   tagline: "I design and build fast, accessible web products — from idea to production.",
   avatar: "https://github.com/bubaa001.png", // or "/me.jpg" placed in /public
   bio: [
@@ -24,9 +24,10 @@ export const siteConfig = {
     { value: "100%", label: "Client focus" },
   ],
   services: [
-    { title: "Web Applications", text: "Full-stack apps with modern frameworks, clean architecture and solid APIs." },
-    { title: "Landing Pages & Sites", text: "Fast, responsive, SEO-friendly sites that look great on every screen." },
-    { title: "UI Engineering", text: "Pixel-careful interfaces, design systems and smooth interactions." },
+    { title: "Landing Pages", text: "Fast, responsive, SEO-ready landing pages that turn visitors into leads and customers." },
+    { title: "Dashboards & Web Apps", text: "Admin panels, SaaS MVPs and internal tools with auth, data and clean UI." },
+    { title: "AI Chatbots", text: "Website assistants that answer from your own info, powered by Claude or OpenAI." },
+    { title: "Fix & Deploy", text: "Broken Next.js builds, Vercel errors and AI-built apps (Lovable, Bolt, v0) made production-ready." },
   ],
   skills: [
     { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "SQL"] },
