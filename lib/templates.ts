@@ -29,8 +29,8 @@ export const templates: Template[] = [
     features: ["Interactive colourway hero with parallax", "Cursor-following category previews", "Quick-add with size picker", "Cart drawer: WhatsApp order + M-Pesa", "Drop countdown + notify form", "Original AI product photography (no third-party brands)"],
     stack: ["Next.js", "React", "Tailwind CSS"],
     tiers: [
-      { name: "Basic", tzs: 340000, usd: 129, pay: "", includes: ["Your logo, colours, products and photos", "Up to 12 products", "Cart with WhatsApp ordering", "Mobile-ready, delivered in 4 days"] },
-      { name: "Standard", tzs: 790000, usd: 299, pay: "", includes: ["Everything in Basic", "Up to 50 products", "Colourway hero, categories, drop countdown", "Custom domain + SEO", "Editable Figma design file"] },
+      { name: "Basic", tzs: 340000, usd: 129, pay: "https://snippe.me/pay/stryde-shoe-store-template-basic", includes: ["Your logo, colours, products and photos", "Up to 12 products", "Cart with WhatsApp ordering", "Mobile-ready, delivered in 4 days"] },
+      { name: "Standard", tzs: 790000, usd: 299, pay: "https://snippe.me/pay/stryde-shoe-store-template-standard", includes: ["Everything in Basic", "Up to 50 products", "Colourway hero, categories, drop countdown", "Custom domain + SEO", "Editable Figma design file"] },
       { name: "Premium", tzs: 1580000, usd: 599, pay: "", includes: ["Everything in Standard", "Up to 150 products + product editor", "Online payments (M-Pesa / card)", "Order notifications, stock & sizes", "30 days support"] },
     ],
   },
