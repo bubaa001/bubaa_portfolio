@@ -131,12 +131,12 @@ function BuySheet({ t, onClose }: { t: Template | null; onClose: () => void }) {
                   <p className="text-xs text-zinc-500">≈ ${tier.usd}</p>
                   <ul className="mt-4 flex-1 space-y-1.5 text-sm text-zinc-300">{tier.includes.map((f) => <li key={f} className="flex gap-2"><span className="text-accent">✓</span>{f}</li>)}</ul>
                   <a href={tier.pay || wa(tier.name, tier.tzs)} target="_blank" rel="noreferrer" className={`mt-5 block rounded-full py-3 text-center text-sm font-semibold transition active:scale-[.98] ${i === 1 ? "bg-white text-zinc-950 hover:bg-zinc-200" : "border border-white/15 text-white hover:bg-white/5"}`}>
-                    {tier.pay ? "Pay with M-Pesa · Card" : "Order on WhatsApp"}
+                    {tier.pay ? "Pay with M-Pesa · Mobile Money" : "Order on WhatsApp"}
                   </a>
                 </div>
               ))}
             </div>
-            <p className="mt-5 text-center text-xs text-zinc-500">Secure payment by Snippe · M-Pesa, Tigo Pesa, Airtel Money and cards · Delivery starts once payment is confirmed</p>
+            <p className="mt-5 text-center text-xs text-zinc-500">Secure payment by Snippe · M-Pesa, Mixx by Yas, Airtel Money, Halopesa · Delivery starts once payment is confirmed</p>
           </>
         )}
       </div>
