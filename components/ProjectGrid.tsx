@@ -8,10 +8,10 @@ export default function ProjectGrid({ projects, tags }: { projects: Project[]; t
   const shown = tag === "All" ? projects : projects.filter((p) => p.tags.includes(tag));
   return (
     <>
-      <div className="mb-8 flex flex-wrap gap-2">
+      <div className="mb-10 inline-flex flex-wrap gap-1 rounded-full border border-white/10 bg-white/[0.02] p-1">
         {["All", ...tags].map((t) => (
           <button key={t} onClick={() => setTag(t)}
-            className={`rounded-full px-3 py-1 text-sm transition ${t === tag ? "bg-accent text-white" : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"}`}>
+            className={`rounded-full px-4 py-1.5 text-sm transition ${t === tag ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"}`}>
             {t}
           </button>
         ))}
@@ -19,7 +19,7 @@ export default function ProjectGrid({ projects, tags }: { projects: Project[]; t
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((p) => <ProjectCard key={p.slug} project={p} />)}
       </div>
-      {!shown.length && <p className="text-slate-500">No projects with this tag yet.</p>}
+      {!shown.length && <p className="text-zinc-500">No projects with this tag yet.</p>}
     </>
   );
 }

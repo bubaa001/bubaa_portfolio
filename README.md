@@ -1,6 +1,6 @@
 # Bubaa — Portfolio
 
-Personal portfolio built with **Next.js 15 + Tailwind CSS**. Fully static, dark mode, SEO-ready.
+Personal portfolio built with **Next.js 15 + Tailwind CSS**. Fully static, dark premium design, scroll animations, SEO-ready.
 
 ## Quick start
 ```bash
@@ -9,7 +9,7 @@ npm run dev   # http://localhost:3000
 ```
 
 ## Personalise
-Everything about you lives in **`site.config.ts`**: name, title, bio, email, socials, skills, experience, résumé link and nav.
+Everything about you lives in **`site.config.ts`**: name, title, avatar, bio, stats, services, email, socials, skills, experience, résumé link and nav.
 
 ## Add a project (no code needed)
 1. Copy `content/projects/_template.md` to `content/projects/my-project.md`.

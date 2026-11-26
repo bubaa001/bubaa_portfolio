@@ -1,8 +1,10 @@
-export default function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
+import Reveal from "./Reveal";
+export default function SectionHeading({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
   return (
-    <div className="mb-8">
-      <p className="text-sm font-semibold uppercase tracking-wider text-accent">{eyebrow}</p>
-      <h2 className="mt-1 text-3xl font-bold tracking-tight">{title}</h2>
-    </div>
+    <Reveal className="mb-12">
+      <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">{title}</h2>
+      {sub && <p className="mt-4 max-w-2xl text-zinc-400">{sub}</p>}
+    </Reveal>
   );
 }

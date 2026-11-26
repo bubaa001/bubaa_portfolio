@@ -2,7 +2,8 @@
 export const siteConfig = {
   name: "Bubaa",
   title: "Software Developer",
-  tagline: "I build clean, fast and useful things for the web.",
+  tagline: "I design and build fast, accessible web products — from idea to production.",
+  avatar: "https://github.com/bubaa001.png", // or "/me.jpg" placed in /public
   bio: [
     "Hi! I'm Bubaa, a developer who enjoys turning ideas into polished products. I care about good design, readable code and shipping things people actually use.",
     "Replace this text in site.config.ts with your own story: what you do, what you're learning and what you're looking for next.",
@@ -16,6 +17,16 @@ export const siteConfig = {
     { label: "GitHub", href: "https://github.com/bubaa001" },
     { label: "LinkedIn", href: "https://linkedin.com/in/your-handle" },
     { label: "X", href: "https://x.com/your-handle" },
+  ],
+  stats: [
+    { value: "2+", label: "Years building" },
+    { value: "20+", label: "Repos shipped" },
+    { value: "100%", label: "Client focus" },
+  ],
+  services: [
+    { title: "Web Applications", text: "Full-stack apps with modern frameworks, clean architecture and solid APIs." },
+    { title: "Landing Pages & Sites", text: "Fast, responsive, SEO-friendly sites that look great on every screen." },
+    { title: "UI Engineering", text: "Pixel-careful interfaces, design systems and smooth interactions." },
   ],
   skills: [
     { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "SQL"] },
@@ -39,7 +50,7 @@ export const siteConfig = {
   ],
   nav: [
     { label: "About", href: "/#about" },
-    { label: "Projects", href: "/projects" },
+    { label: "Work", href: "/projects" },
     { label: "Skills", href: "/#skills" },
     { label: "Experience", href: "/#experience" },
     { label: "Contact", href: "/#contact" },
